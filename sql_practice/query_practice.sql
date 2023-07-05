@@ -1,3 +1,5 @@
+use webdb;
+
 -- dual은 테이블을 특별히 지정하지 않을 떄 사용
 select version(), current_date, now() 
 from dual; 
@@ -40,6 +42,22 @@ update pet
 where owner = '신동성';
 select * from pet;
 
+-- delete: DML(D)
+delete from pet
+where name = '행운이';
+
+-- load data
+load data local infile '/Users/ds/Desktop/pet.txt' into table pet;
+
+update pet
+set death = null
+where name != 'bowser';
+-- 
+
+-- 'select' practice
+select name, species
+	from pet
+    where name like 'F%';
     
     
     
