@@ -8,7 +8,7 @@ select upper('seoul'), ucase('seoul')
     
 -- substring(String, index, length)
 -- 기본 프로그래밍 언어와 다르게 0부터 시작하는 것이 아닌 1로 시작한다. Except for `limit`	
-select substring('Hello World', 3, 2);
+select substring('Hello Worold', 3, 2);
 
 -- ex_01 : 1989년 입사한 사원들의 이름, 입사일을 출력하세요.
 select concat(first_name, " ", last_name) as 'name', hire_date

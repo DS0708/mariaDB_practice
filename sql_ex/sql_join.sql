@@ -71,11 +71,64 @@ select a.emp_no, a.first_name, b.dept_name
    and c.to_date = '9999-01-01';
 -- 실습문제 2 
 -- 현재, 지급되고 있는 급여를 출력해보세요. 
--- 사번, 이름, 급여 순으로 출력 
-
+-- 사번, 이름, 급여 순으로 출력
+select a.emp_no, a.first_name, b.salary
+from employees a join salaries b on a.emp_no = b.emp_no
+where b.to_date > curdate();
 -- 실습문제3 
 -- 현재, 직책별 평균 연봉과 직원수를 구하되 직원수가 100명이상인 직책만 출력하세요. 
+
+-- mycode
+-- step1
+select t.title, avg(salary), count(*) as emp_num
+from titles t join salaries s on t.emp_no = s.emp_no
+where t.to_date > curdate() and s.to_date > curdate()
+group by t.title;
+-- step2 : Result Code
+select title, avg_salary, emp_num
+	from (
+    select t.title, avg(salary) as avg_salary, count(*) as emp_num
+from titles t join salaries s on t.emp_no = s.emp_no
+where t.to_date > curdate() and s.to_date > curdate()
+group by t.title) as t_s
+where emp_num >=100;
+
+-- Teacher's code
+  select b.title, avg(salary), count(*)
+    from salaries a, titles b
+   where a.emp_no = b.emp_no
+     and a.to_date = '9999-01-01'
+     and b.to_date = '9999-01-01'
+group by b.title
+  having count(*) >= 100; 
 
 -- 실습문제4
 -- 현재, 부서별로 직책이 Engineer인 직원들에 대해서만 평균 급여를 구하세요. 
 -- 부서이름, 평균급여 순으로 출력, 평균 급여가 높은 순으로 출력 
+
+-- mycode
+select d.dept_name, avg(c.salary)
+from dept_emp a, titles b, salaries c, departments d
+where a.emp_no = b.emp_no
+	and b.emp_no =  c.emp_no
+    and a.dept_no = d.dept_no
+	and a.to_date > curdate()
+    and b.to_date > curdate()
+    and c.to_date > curdate()
+    and b.title = 'Engineer'
+    group by d.dept_name
+    order by avg(c.salary) desc;
+    
+-- Teacher's code
+select a.dept_name, avg(d.salary)
+  from departments a, dept_emp b, titles c, salaries d
+ where a.dept_no = b.dept_no
+   and b.emp_no = c.emp_no
+   and c.emp_no = d.emp_no
+   and b.to_date = '9999-01-01'
+   and c.to_date = '9999-01-01'
+   and d.to_date = '9999-01-01'
+   and c.title = 'Engineer'
+group by a.dept_name
+order by avg(d.salary) desc; 
+
