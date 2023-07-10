@@ -51,8 +51,61 @@ from employees a, dept_emp b, salaries c,
 -- 문제4.
 -- 현재, 사원들의 사번, 이름, 매니저 이름, 부서 이름으로 출력해 보세요.
 
+-- 부서별 매니저 이름 
+select a.emp_no, a.first_name, c.dept_name, b.dept_no
+from employees a, dept_manager b, departments c
+where b.to_date > curdate() 
+	and a.emp_no = b.emp_no
+    and b.dept_no = c.dept_no;
+
+-- 
+select aa.emp_no, aa.first_name, cc.first_name as 'manager_name', cc.dept_name
+from employees aa, dept_emp bb, (
+	select a.emp_no, a.first_name, c.dept_name, b.dept_no
+	from employees a, dept_manager b, departments c
+	where b.to_date > curdate() 
+	and a.emp_no = b.emp_no
+    and b.dept_no = c.dept_no
+) as cc
+where aa.emp_no = bb.emp_no
+	and bb.dept_no = cc.dept_no
+    and bb.to_date>curdate();
+
 -- 문제5.
 -- 현재, 평균연봉이 가장 높은 부서의 사원들의 사번, 이름, 직책, 연봉을 조회하고 연봉 순으로 출력하세요.
+select a.dept_no, avg(b.salary) as avg_sa
+from dept_emp a, salaries b
+where a.emp_no = b.emp_no
+	and a.to_date > curdate()
+    and b.to_date > curdate()
+    group by a.dept_no
+    order by avg_sa desc;
+    
+select dept_no, max(avg_sa)
+from (select a.dept_no, avg(b.salary) as avg_sa
+	from dept_emp a, salaries b
+	where a.emp_no = b.emp_no
+	and a.to_date > curdate()
+    and b.to_date > curdate()
+    group by a.dept_no) as dept_sal;
+    
+select aa.emp_no, aa.first_name, bb.title, cc.salary, max(dd.avg)
+from employees aa, titles bb, salaries cc, (
+	select a.emp_no , a.dept_no, avg(b.salary) as avg
+	from dept_emp a, salaries b
+	where a.emp_no = b.emp_no
+	and a.to_date > curdate()
+    and b.to_date > curdate()
+    group by a.dept_no
+) as dd, dept_emp ee
+	where aa.emp_no = bb.emp_no
+    and aa.emp_no = cc.emp_no
+    and aa.emp_no = dd.emp_no
+    and aa.emp_no = ee.emp_no
+    and bb.to_date > curdate()
+    and cc.to_date > curdate()
+    group by ee.dept_no
+    having ee.dept_no;
 
 -- 문제6.
 -- 평균 연봉이 가장 높은 부서는? 
