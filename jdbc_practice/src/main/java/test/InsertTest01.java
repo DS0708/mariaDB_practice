@@ -33,8 +33,8 @@ public class InsertTest01 {
 			stmt = conn.createStatement();
 			
 			//4. SQL 실행  주의 : ';'를 쓰면 안됨.
-			String sql = "insert" +
-						"into dept" +
+			String sql = "insert " +
+						"into dept " +
 						"values(null,'" + deptName +"')"; 	
 			int count = stmt.executeUpdate(sql);
 			

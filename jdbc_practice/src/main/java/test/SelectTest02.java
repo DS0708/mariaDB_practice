@@ -2,10 +2,11 @@ package test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class SelectTest01 {
+public class SelectTest02 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -15,7 +16,7 @@ public class SelectTest01 {
 	public static void list() {
 		boolean result = false;
 		Connection conn = null;
-		java.sql.Statement stmt = null;
+		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		
 		try {
@@ -28,18 +29,17 @@ public class SelectTest01 {
 			conn = DriverManager.getConnection(url,"webdb","webdb");		//id, password
 			
 			//3. Statement 생성 
-			stmt = conn.createStatement();
-			
-			//preparedStatement
-			//conn.prepareStatement(psql);
-			
-			//4. SQL 실행  주의 : ';'를 쓰면 안됨.
 			String sql = 
 					"select no, name " +
 					"from dept "+
 					"order by no ";
-			 rs = stmt.executeQuery(sql);	//select는 이게 다르다.
+			stmt = conn.prepareStatement(sql);
 			
+			//4. SQL 실행  주의 : ';'를 쓰면 안됨.
+			 rs = stmt.executeQuery();	//select는 이게 다르다.
+			
+			// binding 할게 없음 . 
+			 
 			//5. 결과 처리 
 			while(rs.next()) {
 				Long no = rs.getLong(1);

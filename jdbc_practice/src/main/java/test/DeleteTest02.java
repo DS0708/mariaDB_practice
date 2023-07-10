@@ -2,21 +2,21 @@ package test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class SelectTest01 {
+public class DeleteTest02 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		list();
+		boolean result = delete(10L);
+		System.out.println(result ? "Success!" : "Failed");
 	}
-	
-	public static void list() {
+
+	private static boolean delete(Long no) {
 		boolean result = false;
 		Connection conn = null;
-		java.sql.Statement stmt = null;
-		ResultSet rs = null;
+		PreparedStatement pstmt = null;
 		
 		try {
 			//1. JDBC Driver Class Loading (Library Loading)
@@ -25,28 +25,21 @@ public class SelectTest01 {
 			//2. Connection
 			String url = "jdbc:mariadb://192.168.0.153:3306/webdb?charset=utf8";		//이것도 드라이버마다 정해져 있음.
 			// mac에서는 옵션을 더 줘야할 수도 있다. 
-			conn = DriverManager.getConnection(url,"webdb","webdb");		//id, password
+			conn = DriverManager.getConnection(url,"webdb","webdb");
 			
-			//3. Statement 생성 
-			stmt = conn.createStatement();
+			//3. Statement Ready
+			String sql = "delete from dept where no = ?";
+			pstmt = conn.prepareStatement(sql);
 			
-			//preparedStatement
-			//conn.prepareStatement(psql);
+			//4. binding
+			pstmt.setLong(1, no);
 			
-			//4. SQL 실행  주의 : ';'를 쓰면 안됨.
-			String sql = 
-					"select no, name " +
-					"from dept "+
-					"order by no ";
-			 rs = stmt.executeQuery(sql);	//select는 이게 다르다.
+			//5. SQL 실행 
+			int count = pstmt.executeUpdate();
 			
-			//5. 결과 처리 
-			while(rs.next()) {
-				Long no = rs.getLong(1);
-				String name = rs.getString(2);
-				
-				System.out.println(no + ":" + name);
-			}
+			//6. 결과 처리 
+			//if(count==1) result=true;
+			result = count ==1;
 			
 		} catch (ClassNotFoundException e) {
 			System.out.println("Failed Driver Loading");
@@ -55,14 +48,16 @@ public class SelectTest01 {
 		} finally {
 			//6. 자원 정리 
 			try {
-				if(rs!=null)	rs.close();
 				if(conn!=null)	conn.close();
-				if(stmt!=null)	stmt.close();
+				if(pstmt!=null)	pstmt.close();
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		return result;
 	}
-
+	
+	
+	
 }
