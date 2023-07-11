@@ -199,7 +199,7 @@ public class BookDao {
 			pstmt = conn.prepareStatement(sql);
 			
 			//4. binding
-			pstmt.setLong(2, no);
+			pstmt.setLong(1, no);
 			
 			//5. SQL 실행  주의 : ';'를 쓰면 안됨.
 			
@@ -207,7 +207,51 @@ public class BookDao {
 			
 			//6. 결과 처리 
 			//if(count==1) result=true;
+			System.out.println(count);
 			result = count ==1;
+			
+		} catch (ClassNotFoundException e) {
+			System.out.println("Failed Driver Loading");
+		}catch (SQLException e) {
+			System.out.println("Error"+e);
+		} finally {
+			//7. 자원 정리 
+			try {
+				if(conn!=null)	conn.close();
+				if(pstmt!=null)	pstmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
+	public boolean init_rent() {
+		// TODO Auto-generated method stub
+		boolean result = false;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			//1. JDBC Driver Class Loading (Library Loading)
+			Class.forName("org.mariadb.jdbc.Driver");	//이것은 변하지 않는다. driver마다 정해져있음.
+			
+			//2. Connection
+			String url = "jdbc:mariadb://192.168.0.153:3306/webdb?charset=utf8";		//이것도 드라이버마다 정해져 있음.
+			// mac에서는 옵션을 더 줘야할 수도 있다. 
+			conn = DriverManager.getConnection(url,"webdb","webdb");
+			
+			//3. Statement 생성 
+			String sql = "update book set rent = 'n' ";
+			pstmt = conn.prepareStatement(sql);
+			
+			
+			int count = pstmt.executeUpdate();
+			
+			//6. 결과 처리 
+			// count = 10 이 출력됨.
+			result = count > 0 ;
 			
 		} catch (ClassNotFoundException e) {
 			System.out.println("Failed Driver Loading");

@@ -11,6 +11,7 @@ public class BookShop {
 	
 	public static void main(String[] args) {
 		
+		init_rent();
 		
 		while(true) {
 			showBookInfo();
@@ -24,6 +25,15 @@ public class BookShop {
 		}
 		
 		scanner.close();
+	}
+
+
+
+	private static void init_rent() {
+		// TODO Auto-generated method stub
+		boolean init_re_check = new BookDao().init_rent();
+		
+		if(!init_re_check) System.out.println("init error");
 	}
 
 
